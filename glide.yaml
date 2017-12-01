@@ -1,0 +1,29 @@
+package: github.com/bartoszmajsak/osio-conformance-tests
+homepage: https://github.com/bartoszmajsak/osio-conformance-tests
+license: Apache-2.0
+import:
+- package: github.com/openshift/client-go
+- package: gopkg.in/yaml.v2
+- package: github.com/golang/glog
+- package: github.com/onsi/gomega
+  version: 1.2.0
+- package: github.com/onsi/ginkgo
+  version: 1.4.0
+  subpackages:
+  - ginkgo
+
+# Workaround for glide to not crawl Godeps.json resulting in depedency fetch errors
+- package: k8s.io/gengo
+  version: 9e661e9308f078838e266cca1c673922088c0ea4
+- package: k8s.io/code-generator
+  version: release-1.8
+- package: k8s.io/apimachinery
+  version: release-1.8
+- package: k8s.io/api
+  version: release-1.8
+- package: k8s.io/client-go
+  version: release-5.0
+- package: github.com/openshift/api
+  version: master
+- package: github.com/golang/glog
+- package: github.com/spf13/pflag
