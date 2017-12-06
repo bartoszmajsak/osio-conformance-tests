@@ -28,8 +28,17 @@ var _ = Describe("OpenShift OAuth", func() {
 	})
 
 	Context("Registered Clients", func() {
-		It("should have oauth client named openshift-io registered redirecting to sso.openshift.io", func() {
-			list, err := client.OauthV1().OAuthClients().Get("openshift-io", metaV1.GetOptions{})
+		It("should have oauth client named openshift-io registered", func() {
+			oAuthClient, err := client.OauthV1().OAuthClients().Get("openshift-io", metaV1.GetOptions{})
+			if err !=  nil {
+				panic(err.Error())
+			}
+
+			Ω(oAuthClient.Name).Should(Equal("openshift-io"))
+		})
+
+		It("should have oauth client named openshift-io registered with redirect to https://sso.openshift.io", func() {
+			oAuthClient, err := client.OauthV1().OAuthClients().Get("openshift-io", metaV1.GetOptions{})
 			if err !=  nil {
 				panic(err.Error())
 			}
@@ -38,7 +47,7 @@ var _ = Describe("OpenShift OAuth", func() {
 				return o.RedirectURIs
 			}
 
-			Ω(list).Should(WithTransform(GetRedirects, ContainElement("https://sso.openshift.io")))
+			Ω(oAuthClient).Should(WithTransform(GetRedirects, ContainElement("https://sso.openshift.io")))
 		})
 	})
 
