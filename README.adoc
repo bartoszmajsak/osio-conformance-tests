@@ -1,1 +1,97 @@
 = Sonobuoy Tests for OSIO
+
+This is a repository of conformance tests for Openshift.io cluster. Tests are written in Go and executed through Docker image `bartoszmajsak/osio-conformance-tests` used by https://github.com/heptio/sonobuoy[Heptio Sonobuoy].
+
+== Prerequisites
+
+=== Development
+
+Simply run `./setup.sh` if you are on Linux and it will take care of all the bits required to get you started with golang.
+
+For development you have plenty of choices:
+
+* https://code.visualstudio.com/[Visual Studio Code] with its https://github.com/Microsoft/vscode-go[Golang extension]
+* https://www.jetbrains.com/go/[Goland]
+* And much more on https://awesome-go.com/#editor-plugins[Awesome Go] list
+
+=== Executing tests against local cluster
+
+=== Minishift
+
+One of the options to run OSIO tests locally is to start up Minishift. You can follow https://docs.openshift.org/latest/minishift/getting-started/installing.html[the official guide] or use https://github.com/asdf-vm/asdf[asdf version manager] with https://github.com/bartoszmajsak/asdf-minishift[minishift plugin] which will boil down to following command:
+
+```
+$ asdf install minishift 1.9.0 && asdf global minishift 1.9.0
+```
+
+Then simply start minishift:
+
+```
+minishift start
+```
+
+and login as admin to perform next steps
+
+```
+oc login -u system:admin
+
+```
+
+==== OAuth client
+
+In order to pass the test you have to register `OAuth Client`.
+
+```
+oc create -f <(echo "
+{
+    \"kind\": \"OAuthClient\",
+    \"apiVersion\": \"v1\",
+    \"metadata\": {
+    \"name\": \"openshift-io\"
+    },
+    \"secret\": \"1234\",
+    \"grantMethod\": \"prompt\",
+    \"redirectURIs\": [
+        \"https://sso.openshift.io\"
+    ]
+}")
+```
+
+
+=== Cluster admin role for Sonobuoy user
+
+```
+oc adm policy add-cluster-role-to-user cluster-admin system:serviceaccount:heptio-sonobuoy:sonobuoy-serviceaccount
+```
+
+=== Executing tests
+
+From the root of this project execute
+
+```
+export RBAC_ENABLED=$(kubectl api-versions | grep "rbac.authorization.k8s.io/v1" -c)
+kubectl apply -f osio.yaml
+```
+
+In order to see the logs of Sonobuoy pod execute
+
+```
+kubectl logs -f sonobuoy --namespace=heptio-sonobuoy
+```
+
+and if you will see entry similar to
+
+```
+time="2017-12-06T13:23:01Z" level=info msg="no-exit was specified, sonobuoy is now blocking"
+```
+
+it means that execution has stopped.
+
+At this point you can export Sonobuoy results (and test reports) by executing:
+
+```
+kubectl cp heptio-sonobuoy/sonobuoy:/tmp/sonobuoy ./results --namespace=heptio-sonobuoy
+```
+
+
+
