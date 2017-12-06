@@ -29,8 +29,8 @@ endif
 # Pass in build time variables to main
 LDFLAGS="-X main.Commit=${COMMIT} -X main.BuildTime=${BUILD_TIME}"
 
-help: ## Get help
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-10s\033[0m %s\n", $$1, $$2}'
+help: ## Hey! That's me!
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-10s\033[0m %s\n", $$1, $$2}'
 
 .DEFAULT_GOAL := all
 
@@ -38,12 +38,20 @@ help: ## Get help
 all: clean install compile container ## (default) Performs clean build  and container packaging
 
 .PHONY: clean
-clean: ## Removes binary and docker images
+clean: ## Removes binary, cache folder and docker images
 	if [ -f ${BINARY} ] ; then rm ${BINARY} ; fi
 	rm -rf _cache bin/*
 	$(DOCKER) rmi $(REGISTRY)/$(TARGET):latest \
 				  $(REGISTRY)/$(TARGET):v$(kube_version) \
 				  $(REGISTRY)/$(TARGET):$(kube_version_full) || true
+
+.PHONY: compile
+compile: $(BINARY) ## Just builds the test binary
+
+$(BINARY): $(SOURCES)
+	ginkgo build -r -ldflags ${LDFLAGS}
+	mkdir -p ./bin/
+	mv $(BINARY) ./bin/
 
 .PHONY: install
 install: ## Fetches all dependencies using Glide
@@ -53,15 +61,8 @@ install: ## Fetches all dependencies using Glide
 up: ## Updates all dependencies defined for glide
 	glide up -v
 
-.PHONY: compile
-compile: $(BINARY) ## Just builds the binary
-
-$(BINARY): $(SOURCES)
-	ginkgo build -r -ldflags ${LDFLAGS}
-	mkdir -p ./bin/
-	mv $(BINARY) ./bin/
-
-container: getbins
+.PHONY: container
+container: getbins ## fetches required binaries (kubectl and cluster) and builds docker images
 	$(DOCKER) build -t $(REGISTRY)/$(TARGET):v$(kube_version) \
 	                -t $(REGISTRY)/$(TARGET):$(kube_version_full) .
 	if [ "$(kube_version)" = "$(latest_stable)" ]; then \
