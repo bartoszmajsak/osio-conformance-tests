@@ -33,8 +33,10 @@ echo -e "${CLEAR}${LIGHT_GREEN}Installing required go packages${CLEAR}"
 go get -u github.com/alecthomas/gometalinter && gometalinter --install
 go get -u github.com/onsi/ginkgo/ginkgo
 go get -u github.com/onsi/gomega
+
+echo -e "${CLEAR}${LIGHT_GREEN}Installing glide and project dependencies${CLEAR}"
 curl https://glide.sh/get | sh
-make up
+make install
 
 echo -e "${CLEAR}${GREEN}Don't forget to extend your ${CLEAR}\$GOPATH${GREEN} to contain your workspace, e.g.: \n${CLEAR}${LIGHT_GREEN}export GOPATH=\$GOPATH:~/code/golang${CLEAR}"
 
