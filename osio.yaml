@@ -128,12 +128,9 @@ data:
       namespace: '{{.Namespace}}'
     spec:
       containers:
-      - env:
-        - name: E2E_FOCUS
-          value: Pods should be submitted and removed
-        image: bartoszmajsak/osio-conformance:latest
+      - image: bartoszmajsak/osio-conformance:latest
         imagePullPolicy: Always
-        name: e2e
+        name: osio-conformance
         volumeMounts:
         - mountPath: /tmp/results
           name: results
