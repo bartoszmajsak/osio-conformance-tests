@@ -17,7 +17,7 @@ For development you have plenty of choices:
 
 Then `make help` is your friend.
 
-=== Executing tests against local cluster
+== Executing tests against local cluster
 
 === Minishift
 
@@ -42,7 +42,7 @@ oc login -u system:admin
 
 ```
 
-==== OAuth client
+=== OAuth client
 
 In order to pass the test you have to register `OAuth Client`.
 
