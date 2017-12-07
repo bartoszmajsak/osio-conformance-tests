@@ -1,6 +1,6 @@
 = Sonobuoy Tests for OSIO
 
-This is a repository of conformance tests for Openshift.io cluster. Tests are written in Go and executed through Docker image `bartoszmajsak/osio-conformance-tests` used by https://github.com/heptio/sonobuoy[Heptio Sonobuoy].
+This is a repository of conformance tests for Openshift.io cluster. Tests are written in Go and executed through Docker image https://hub.docker.com/r/bartoszmajsak/osio-conformance[`bartoszmajsak/osio-conformance`] used by https://github.com/heptio/sonobuoy[Heptio Sonobuoy].
 
 == Prerequisites
 
