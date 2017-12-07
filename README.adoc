@@ -27,6 +27,8 @@ One of the options to run OSIO tests locally is to start up Minishift. You can f
 $ asdf install minishift 1.9.0 && asdf global minishift 1.9.0
 ```
 
+Next you can either follow the steps explained below or just let them run using `minishift_test.sh`.
+
 Then simply start minishift:
 
 ```
